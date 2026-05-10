@@ -1,0 +1,6 @@
+interface:
+  display_name: "Xixiang Order Skill"
+  short_description: "熙香企业订餐平台点餐助手"
+  default_prompt: "Use $xixiang-order-skill to review next week's Xixiang meal options and choose orders based on my preferences."
+policy:
+  allow_implicit_invocation: true
