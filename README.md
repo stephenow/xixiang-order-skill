@@ -1,62 +1,75 @@
-# 熙香订餐 Skill
+# Xixiang Order Skill
 
-这是给 Codex 使用的熙香企业订餐平台 Skill。安装后，同事可以让 Codex 打开熙香订餐网站、查看午餐和晚餐菜单、按明确要求或口味偏好选择餐品，并在下单后核对订单状态。
+Codex skill for Xixiang enterprise meal ordering through the platform's direct API.
 
-## 推荐安装方式
+This repository is intended to be safe for an open-source workspace:
 
-推荐在 Codex 桌面版里安装这个 GitHub 仓库里的 Skill。
+- no account, password, token, order number, address, company id, or company name is committed;
+- local credentials live only in `.xixiang-credentials.json`, which is ignored by Git;
+- raw browser snapshots and bundled frontend captures are ignored and should not be published.
 
-这个 Skill 需要操作真实浏览器来登录、查看菜单、点选餐品和核对订单。Codex 桌面版的浏览器自动化能力更稳定；普通聊天环境或只接 API 的环境通常无法完整完成订餐流程。
+## How It Works
 
-在 Codex 里对助手说：
+The skill uses HTTPS API calls instead of browser automation:
 
-```text
-安装这个 skill：https://github.com/stephenow/xixiang-order-skill
+1. Log in with an enterprise account.
+2. Read available reservation dates and meal slots.
+3. Fetch restaurants and dishes for each open slot.
+4. Match explicit dish choices or prepare a recommendation for user confirmation.
+5. Add the selected dish to the same meal-slot cart.
+6. Verify cart, address, payment type, and order result.
+7. Re-read the calendar to confirm the slot is marked as ordered.
+
+Browser clicking is intentionally not part of the workflow anymore.
+
+## Local Credentials
+
+Create a local credential file from the template:
+
+```powershell
+Copy-Item .xixiang-credentials.example.json .xixiang-credentials.json
 ```
 
-安装完成后，可以这样使用：
+Then fill in your own enterprise account and password locally.
 
-```text
-使用 xixiang-order-skill，帮我查看下周熙香午餐和晚餐菜单。我偏好清淡、少辣、不要海鲜，先给我推荐方案，确认后再下单。
+Never commit `.xixiang-credentials.json`.
+
+## API Helper
+
+List menus:
+
+```powershell
+.\scripts\xixiang-api.ps1 -Action List -StartDate 2026-06-01 -Days 5
 ```
 
-如果已经知道要点什么，也可以直接说：
+Order one meal by keyword:
 
-```text
-使用 xixiang-order-skill，帮我订周一午餐的番茄牛腩饭和周一晚餐的鸡腿饭。
+```powershell
+.\scripts\xixiang-api.ps1 -Action Order -Date 2026-06-01 -Meal 午餐 -Keyword 牛肉
 ```
 
-## 使用前准备
+By default the script submits "no tableware". Add `-NeedTableware` if utensils are needed.
 
-你需要准备熙香企业订餐平台的企业账号和密码。
+The helper prints sanitized JSON. It does not print passwords or API tokens.
 
-如果你忘记了，可以在飞书的 2506 群的置顶链接的 PDF 里找到，也可以问 Yu。
-
-## 它会怎么工作
-
-- 登录熙香企业订餐平台。
-- 查看目标日期的午餐和晚餐状态。
-- 跳过已经订好的餐，除非你明确要求更换或取消。
-- 如果你给了明确菜名，它会按你的要求下单并核对结果。
-- 如果你只给了口味偏好，它会先整理推荐清单，等你确认后再提交。
-- 下单后回到订餐日历，确认目标餐次显示已点餐和对应菜名。
-
-## 示例指令
+## Codex Usage Examples
 
 ```text
-使用 xixiang-order-skill，帮我订这周剩下所有工作日的午餐。我在减肥，给我热量最低的选项。
+使用 xixiang-order-skill，查看下周工作日午餐菜单，先列出来让我选。
 ```
 
 ```text
-使用 xixiang-order-skill，看看明天午餐有哪些选项，给我推荐一个重口味的。
+使用 xixiang-order-skill，给我订今天午餐，关键词是牛肉。
 ```
 
 ```text
-使用 xixiang-order-skill，检查我下周哪些餐还没订，列出来给我确认。
+使用 xixiang-order-skill，检查下周哪些午餐还没订。
 ```
 
-## 仓库内容
+## Repository Layout
 
-- `SKILL.md`：Skill 的主说明，Codex 会读取这里的规则。
-- `references/ordering-workflow.md`：熙香订餐页面流程和已知页面行为。
-- `agents/openai.yaml`：Codex/OpenAI 相关的展示配置。
+- `SKILL.md`: Codex-facing rules and workflow.
+- `scripts/xixiang-api.ps1`: dependency-free PowerShell API helper.
+- `references/api-protocol.md`: sanitized API protocol notes.
+- `.xixiang-credentials.example.json`: local credential template.
+- `SECURITY.md`: privacy and contribution rules.

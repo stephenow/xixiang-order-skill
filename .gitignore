@@ -1,0 +1,12 @@
+.xixiang-credentials.json
+.xixiang-session.json
+
+# Local captures from reverse engineering. Do not publish platform bundles,
+# snapshots, cookies, tokens, company data, or user-specific page state.
+47.js
+app.js
+chunk-*.js
+index.html
+manifest.js
+snapshot.txt
+vendor.js
