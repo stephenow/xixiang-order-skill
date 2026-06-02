@@ -67,17 +67,22 @@ function Escape-Api([string]$Value) {
 }
 
 function Get-MealCode([string]$MealName) {
-  switch ($MealName) {
-    '早餐' { return 1 }
-    '午餐' { return 2 }
-    '商城' { return 3 }
-    '晚餐' { return 4 }
-    default {
-      $parsed = 0
-      if ([int]::TryParse($MealName, [ref]$parsed)) { return $parsed }
-      throw "Unknown meal value: $MealName. Use 早餐, 午餐, 晚餐, or a numeric menu type."
-    }
+  $value = ''
+  if ($null -ne $MealName) {
+    $value = $MealName.Trim().ToLowerInvariant()
   }
+
+  $breakfast = [string]([char]0x65E9) + [string]([char]0x9910)
+  $lunch = [string]([char]0x5348) + [string]([char]0x9910)
+  $mall = [string]([char]0x5546) + [string]([char]0x57CE)
+  $dinner = [string]([char]0x665A) + [string]([char]0x9910)
+
+  if ($value -eq '1' -or $value -eq 'breakfast' -or $value -eq $breakfast) { return 1 }
+  if ($value -eq '2' -or $value -eq 'lunch' -or $value -eq $lunch) { return 2 }
+  if ($value -eq '3' -or $value -eq 'mall' -or $value -eq $mall) { return 3 }
+  if ($value -eq '4' -or $value -eq 'dinner' -or $value -eq $dinner) { return 4 }
+
+  throw "Unknown meal value: $MealName. Use 1/2/4, breakfast/lunch/dinner, or Chinese meal labels."
 }
 
 function Get-StatusText($Status) {

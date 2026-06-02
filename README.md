@@ -45,10 +45,10 @@ List menus:
 Order one meal by keyword:
 
 ```powershell
-.\scripts\xixiang-api.ps1 -Action Order -Date 2026-06-01 -Meal 午餐 -Keyword 牛肉
+.\scripts\xixiang-api.ps1 -Action Order -Date 2026-06-01 -Meal 2 -Keyword 牛肉
 ```
 
-By default the script submits "no tableware". Add `-NeedTableware` if utensils are needed.
+Meal values accept `2`/`lunch` for lunch and `4`/`dinner` for dinner. Chinese labels are also supported. By default the script submits "no tableware". Add `-NeedTableware` if utensils are needed.
 
 The helper prints sanitized JSON. It does not print passwords or API tokens.
 

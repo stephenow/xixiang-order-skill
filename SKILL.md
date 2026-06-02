@@ -43,7 +43,7 @@ Prefer the repository helper for repeatable API work:
 
 ```powershell
 .\scripts\xixiang-api.ps1 -Action List -StartDate <YYYY-MM-DD> -Days 5
-.\scripts\xixiang-api.ps1 -Action Order -Date <YYYY-MM-DD> -Meal 午餐 -Keyword <dish-keyword>
+.\scripts\xixiang-api.ps1 -Action Order -Date <YYYY-MM-DD> -Meal 2 -Keyword <dish-keyword>
 ```
 
 The helper reads `.xixiang-credentials.json` and prints sanitized JSON only.
