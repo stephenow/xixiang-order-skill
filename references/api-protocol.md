@@ -134,6 +134,18 @@ After submission, call `companyIndex/` again for the date:
 - `list_data.menu` should include the expected `menu_name`;
 - `list_data.menu_num` should match expected quantity.
 
+## Order History
+
+```http
+GET /memPerson/orderList/?api_token=<token>&orderStatus=<status>&page=<n>
+```
+
+- `orderStatus=0` returns all orders, newest `publish_at` first, paginated (`data.last_page`, `data.total`, rows in `data.data`).
+- Useful row fields: `publish_at` (meal date, `YYYY年MM月DD日`), `menu_type`, `menu_name`, `total_num`, `order_status`.
+- Observed `order_status`: `14` upcoming, `2` completed, `4` likely cancelled. Rows have no restaurant name.
+- Rows embed `companyinfo` and the order number; never print or store those.
+- Past dates in `companyIndex/` show `closed` without the ordered dish, so use this endpoint for history.
+
 ## Recommended Flow
 
 1. Login.

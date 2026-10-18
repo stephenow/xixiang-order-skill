@@ -22,6 +22,7 @@ This skill is API-only. Do not use browser automation for normal menu lookup, or
 - Do not replace, cancel, or increase an existing order unless the user explicitly requests that exact action.
 - If an endpoint returns an unexpected payment requirement, missing address, closed slot, sold-out dish, duplicate order, or `code != 1`, stop and report the message.
 - Default to no tableware unless the user asks for utensils.
+- Read `.xixiang-preferences.json` when it exists. If `recordCompletedOrdersToGoogleCalendar` is `true` and a Google Calendar connection is available, create a non-blocking calendar event after each verified order, without asking again. Use the configured meal times and do not include account, address, token, or order-number details.
 
 ## API Workflow
 
@@ -44,6 +45,7 @@ Prefer the repository helper for repeatable API work:
 ```powershell
 .\scripts\xixiang-api.ps1 -Action List -StartDate <YYYY-MM-DD> -Days 5
 .\scripts\xixiang-api.ps1 -Action Order -Date <YYYY-MM-DD> -Meal 2 -Keyword <dish-keyword>
+.\scripts\xixiang-api.ps1 -Action History -StartDate <YYYY-MM-DD> -EndDate <YYYY-MM-DD>
 ```
 
 The helper reads `.xixiang-credentials.json` and prints sanitized JSON only.

@@ -1,5 +1,5 @@
-param(
-  [ValidateSet('List', 'Order')]
+﻿param(
+  [ValidateSet('List', 'Order', 'History')]
   [string]$Action = 'List',
 
   [string]$StartDate,
@@ -9,11 +9,15 @@ param(
   [string]$Meal,
   [string]$Keyword,
 
+  [string]$EndDate,
+  [int]$MaxPages = 20,
+
   [string]$CredentialsPath = '.xixiang-credentials.json',
   [switch]$NeedTableware
 )
 
 $ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 $BaseUrl = 'https://api.platform.xixiang000.com/'
 $Headers = @{
   Accept = 'application/json, text/plain, */*'
@@ -279,8 +283,40 @@ function Invoke-OrderMeal {
   })
 }
 
+function Invoke-OrderHistory {
+  $token = Login-Xixiang
+  $start = if ($StartDate) { [datetime]::ParseExact($StartDate, 'yyyy-MM-dd', $null) } else { [datetime]::MinValue }
+  $end = if ($EndDate) { [datetime]::ParseExact($EndDate, 'yyyy-MM-dd', $null) } else { [datetime]::MaxValue }
+  $orders = @()
+
+  for ($page = 1; $page -le $MaxPages; $page++) {
+    $response = Invoke-XxGet "memPerson/orderList/?api_token=$(Escape-Api $token)&orderStatus=0&page=$page"
+    if ([int]$response.code -ne 1) { throw "Order history failed: $($response.message)" }
+
+    $reachedStart = $false
+    foreach ($order in @($response.data.data)) {
+      $date = [datetime]::ParseExact(($order.publish_at -replace '\D', ''), 'yyyyMMdd', $null)
+      if ($date -lt $start) { $reachedStart = $true; continue }
+      if ($date -gt $end) { continue }
+      $orders += [pscustomobject]@{
+        date = $date.ToString('yyyy-MM-dd')
+        meal = [int]$order.menu_type
+        item = $order.menu_name
+        quantity = [int]$order.total_num
+        orderStatus = [int]$order.order_status
+      }
+    }
+
+    if ($reachedStart -or $page -ge [int]$response.data.last_page) { break }
+  }
+
+  Write-Json ([pscustomobject]@{ ok = $true; orders = @($orders | Sort-Object date, meal) })
+}
+
 if ($Action -eq 'List') {
   Invoke-ListMenus
+} elseif ($Action -eq 'History') {
+  Invoke-OrderHistory
 } else {
   Invoke-OrderMeal
 }

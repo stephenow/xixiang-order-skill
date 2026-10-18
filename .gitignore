@@ -1,5 +1,6 @@
 .xixiang-credentials.json
 .xixiang-session.json
+.xixiang-preferences.json
 
 # Local captures from reverse engineering. Do not publish platform bundles,
 # snapshots, cookies, tokens, company data, or user-specific page state.
