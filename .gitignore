@@ -2,6 +2,10 @@
 .xixiang-session.json
 .xixiang-preferences.json
 
+# Order records are personal data and must not be published here. They live in
+# the private knowledge base under 60_Logs/MealOrders/.
+meal-orders/
+
 # Local captures from reverse engineering. Do not publish platform bundles,
 # snapshots, cookies, tokens, company data, or user-specific page state.
 47.js

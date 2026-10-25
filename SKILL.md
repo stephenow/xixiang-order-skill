@@ -24,6 +24,13 @@ This skill is API-only. Do not use browser automation for normal menu lookup, or
 - Default to no tableware unless the user asks for utensils.
 - Read `.xixiang-preferences.json` when it exists. If `recordCompletedOrdersToGoogleCalendar` is `true` and a Google Calendar connection is available, create a non-blocking calendar event after each verified order, without asking again. Use the configured meal times and do not include account, address, token, or order-number details.
 
+## Order Records
+
+- Never write order records into this repository or commit them: it is public.
+- After a week's orders are placed and verified, write one Markdown file per week into the user's private knowledge base at `60_Logs/MealOrders/<YYYY-MM-DD>.md`, named by that week's Monday. One row per slot: date, weekday, meal, chosen option, restaurant, dish, quantity, status. Include the unchosen option when it is known, and note anything unverified (restaurant name, calendar sync) instead of guessing.
+- Keep order numbers, prices, account, address, and token data out of the records.
+- The knowledge base is a separate private repository; ask the user for its root if it is not already known in the session.
+
 ## API Workflow
 
 1. Read `references/api-protocol.md`.
